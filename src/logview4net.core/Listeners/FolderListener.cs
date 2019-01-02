@@ -3,6 +3,9 @@
  * Copyright 2008 Johan Idstam
  * 
  * 
+ * Added ability to load files recursively
+ * Copyright 2019 Sergei Ryzhov
+ *
  * This source code is released under the Artistic License 2.0.
  */
 
@@ -177,6 +180,7 @@ namespace logview4net.Listeners
             if (_watcher == null)
             {
                 _watcher = new FileSystemWatcher(_folderName);
+                _watcher.IncludeSubdirectories = true;
                 _watcher.Created += new FileSystemEventHandler(watcher_Created);
                 _watcher.Changed += new FileSystemEventHandler(watcher_Changed);
                 _watcher.Deleted += new FileSystemEventHandler(_watcher_Deleted);
@@ -192,7 +196,7 @@ namespace logview4net.Listeners
 
         private void GetInitialFileData()
         {
-            foreach (var f in Directory.GetFiles(_folderName))
+            foreach (var f in Directory.GetFiles(_folderName, "*", SearchOption.AllDirectories))
             {
                 if (!_showNoData)
                 {
