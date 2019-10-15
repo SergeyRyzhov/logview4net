@@ -2,6 +2,8 @@
  * This file is part of logview4net (logview4net.sourceforge.net)
  * Copyright 2008 Johan Idstam
  * 
+ * Added ability to set default value for checkboxes
+ * Copyright 2019 Sergei Ryzhov
  * 
  * This source code is released under the Artistic License 2.0.
  */
@@ -155,6 +157,8 @@ namespace logview4net.Listeners
                     chk.Height = l.Height;
                     Controls.Add(chk);
                     chk.Visible = true;
+                    bool value;
+                    chk.Checked = bool.TryParse(f.Value, out value) && value;
                     chk.CheckedChanged += new EventHandler(chk_CheckedChanged);
                     _nextLeft = chk.Right + 6;
                     ret = chk;

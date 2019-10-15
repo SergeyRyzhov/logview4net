@@ -42,6 +42,11 @@ namespace logview4net.Listeners
         protected string _folderName;
 
         /// <summary>
+        /// Whether or not to scan subcategories
+        /// </summary>
+        private bool _includeSubdirectories = true;
+
+        /// <summary>
         /// Whether or not to add the file name to the message prefix
         /// </summary>
         private bool _fileNamePrefix;
@@ -179,8 +184,14 @@ namespace logview4net.Listeners
 
             if (_watcher == null)
             {
+                if (!Directory.Exists(_folderName))
+                {
+                    _log.Info(GetHashCode(), "Directory doesn't exists, nothing to poll" + _folderName );
+                    return;
+                }
+
                 _watcher = new FileSystemWatcher(_folderName);
-                _watcher.IncludeSubdirectories = true;
+                _watcher.IncludeSubdirectories = _includeSubdirectories;
                 _watcher.Created += new FileSystemEventHandler(watcher_Created);
                 _watcher.Changed += new FileSystemEventHandler(watcher_Changed);
                 _watcher.Deleted += new FileSystemEventHandler(_watcher_Deleted);
@@ -345,6 +356,12 @@ namespace logview4net.Listeners
             f.MultiValueType = MultiValueTypes.FolderBrowserButton;
             ret.Add("folder_open", f);
 
+            f = new ListenerConfigField();
+            f.Name = "Include subdirectories";
+            f.MultiValueType = MultiValueTypes.Check;
+            f.Value = bool.TrueString.ToLowerInvariant();
+            ret.Add("include_subdirectories", f);
+
             //f = new ListenerConfigField();
             //f.Name = "BREAK";
             //f.MultiValueType = MultiValueTypes.Linebreak;
@@ -374,6 +391,8 @@ namespace logview4net.Listeners
                     return _folderName;
                 case "folder_open":
                     return null;
+                case "include_subdirectories":
+                    return _includeSubdirectories.ToString();
                 default:
                     throw new NotImplementedException("This listener has no field named: " + name);
             }
@@ -415,6 +434,12 @@ namespace logview4net.Listeners
                     break;
                 case "folder_open":
                     _folderName = value;
+                    break;
+                case "include_subdirectories":
+                    if (!bool.TryParse(value, out _includeSubdirectories))
+                    {
+                        ret = "Please enter [true] or [false] here.";
+                    }
                     break;
                 default:
                     throw new NotImplementedException("This listener has no field named: " + name);
