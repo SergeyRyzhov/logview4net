@@ -3,6 +3,9 @@
  * Copyright 2008 Johan Idstam
  * 
  * 
+ * Enabled hot key for find
+ * Copyright 2019 Sergei Ryzhov
+ *
  * This source code is released under the Artistic License 2.0.
  */
 
@@ -670,6 +673,8 @@ namespace logview4net.Viewers
             // findToolStripMenuItem
             // 
             this._findToolStripMenuItem.Name = "findToolStripMenuItem";
+            this._findToolStripMenuItem.ShortcutKeys =
+                ((System.Windows.Forms.Keys) ((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this._findToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this._findToolStripMenuItem.Text = "&Find";
             this._findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
